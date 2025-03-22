@@ -4,9 +4,8 @@ import React, { useState } from 'react';
 import {
   InvestmentFormData,
   Recommendation,
-  generateInvestmentRecommendations,
-  getCurrencySymbol,
-  formatCurrency
+  generateInvestmentRecommendations
+  // Removed unused imports: getCurrencySymbol, formatCurrency
 } from '@/app/api/InvestmentApi'; // Update this path to match your project structure
 import "@/app/styles/Investment.css";
 
@@ -25,11 +24,7 @@ interface BondYields {
   date?: string;
 }
 
-interface IndianMarketData {
-  nifty50: number;
-  sensex: number;
-  dailyChange: number;
-}
+// Remove unused interface: IndianMarketData
 
 const InvestmentAdvisor: React.FC = () => {
   const [formData, setFormData] = useState<InvestmentFormData>({
