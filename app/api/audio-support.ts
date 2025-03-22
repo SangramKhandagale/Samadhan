@@ -330,47 +330,6 @@ async function saveToGoogleSheets(request: SupportRequest, analysis: GroqAnalysi
   }
 }
 
-async function makePhoneCall(request: SupportRequest, analysis: GroqAnalysisResponse): Promise<boolean> {
-  try {
-    const blandApiKey = process.env.BLAND_AI_API_KEY;
-    
-    if (!blandApiKey) {
-      throw new Error('Bland.ai API key is not defined');
-    }
-    
-    // Format the phone number to E.164 format
-    const formattedPhone = request.phone.replace(/\D/g, '');
-    if (!formattedPhone || formattedPhone.length < 10) {
-      throw new Error('Invalid phone number');
-    }
-    
-    const phoneWithCountryCode = formattedPhone.startsWith('1') ? 
-      `+${formattedPhone}` : `+91${formattedPhone}`;
-    
-    // Prepare message in the customer's language
-    const response = await fetch('https://api.bland.ai/v1/calls', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${blandApiKey}`
-      },
-      body: JSON.stringify({
-        phone_number: phoneWithCountryCode,
-        task: `You're a bank support representative. The customer ${request.name} has submitted a support request about: ${request.subject}. Their issue is: ${request.description}. Based on our analysis, the recommended solution is: ${analysis.solution}. Call them to follow up and provide this solution. You MUST speak to them in ${analysis.language} only. Make it Natural.`,
-        voice: 'nicole',
-        reduce_latency: true,
-        wait_for_greeting: true
-      })
-    });
-    
-    const result = await response.json();
-    return !!result.call_id;
-  } catch (error) {
-    console.error('Error making phone call with Bland.ai:', error);
-    return false;
-  }
-}
-
 // Main function to handle audio support requests
 export async function submitAudioSupportRequest(
   request: AudioSupportRequest,
@@ -391,7 +350,7 @@ export async function submitAudioSupportRequest(
     }
 
     // Step 2: Create description based on whether previousConversations exists
-    let description: string = previousConversations
+    const description: string = previousConversations
       ? `${previousConversations}\n\nNew request: ${transcriptionResult.description}`
       : transcriptionResult.description;
 
@@ -414,15 +373,6 @@ export async function submitAudioSupportRequest(
 
     // Step 6: Save data to Google Sheets
     const sheetResult = await saveToGoogleSheets(supportRequest, analysis, ticketId);
-
-    // // Step 7: ALWAYS make phone call using Bland.ai
-    // let callResult = false;
-    // try {
-    //   callResult = await makePhoneCall(supportRequest, analysis);
-    // } catch (callError) {
-    //   console.error('Phone call failed, but continuing with process:', callError);
-    //   // Don't throw here, continue with process even if call fails
-    // }
 
     // Return success response with ticket ID, analysis, and the original request data
     return {

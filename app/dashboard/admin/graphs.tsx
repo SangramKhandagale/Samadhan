@@ -7,7 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 const Graphs: React.FC = () => {
   const [tickets, setTickets] = useState<CustomerTicket[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const loadTicketData = async () => {
@@ -16,7 +16,7 @@ const Graphs: React.FC = () => {
         setTickets(data);
         setLoading(false);
       } catch (error) {
-        setError("Failed to load ticket data");
+        setErrorMessage("Failed to load ticket data");
         setLoading(false);
       }
     };
@@ -70,10 +70,10 @@ const Graphs: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (errorMessage) {
     return (
       <div className="border border-gray-200 rounded p-4 bg-gray-50 text-gray-600">
-        <p>{error}</p>
+        <p>{errorMessage}</p>
       </div>
     );
   }

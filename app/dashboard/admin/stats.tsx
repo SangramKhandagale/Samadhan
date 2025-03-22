@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { fetchCustomerTickets, CustomerTicket } from '@/app/api/get-queries';
+import { fetchCustomerTickets } from '@/app/api/get-queries';
 
 const Stats: React.FC = () => {
   const [ticketStats, setTicketStats] = useState({
@@ -28,7 +28,7 @@ const Stats: React.FC = () => {
           loading: false,
           error: null,
         });
-      } catch (error) {
+      } catch (err) {
         setTicketStats(prev => ({
           ...prev,
           loading: false,

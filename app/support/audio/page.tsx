@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   submitAudioSupportRequest,
   AudioSupportRequest,
- 
 } from "@/app/api/audio-support";
 import { SupportResponse } from "@/app/api/text-support";
 import { Mic, MicOff, Square, RotateCcw, Send } from "lucide-react";
@@ -23,16 +22,17 @@ export default function AudioSupportPage() {
 
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
-  // Form states
-  const [name, setName] = useState("Anonymous Customer");
-  const [email, setEmail] = useState("support@example.com");
-  const [phone, setPhone] = useState("9881679994"); // Default phone for demo
+  
+  // Form states - using refs instead of unused state variables
+  const nameRef = useRef("Anonymous Customer");
+  const emailRef = useRef("support@example.com");
+  const phoneRef = useRef("9881679994"); // Default phone for demo
 
   // Submission states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [response, setResponse] = useState<SupportResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [newResponse , setnewResponse] = useState(true)
+  const [newResponse, setNewResponse] = useState(true);
 
   // Refs
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -60,10 +60,7 @@ export default function AudioSupportPage() {
       .padStart(2, "0")}`;
   };
 
-  // Add this to your state
-  const [voiceIntensity, setVoiceIntensity] = useState(0);
-
-  // Replace the basic voice detection with this more nuanced version
+  // Detect voice activity
   const detectVoiceActivity = () => {
     if (!analyserRef.current) return;
 
@@ -181,6 +178,7 @@ export default function AudioSupportPage() {
       }
     }
   };
+  
   // Reset recording function
   const resetRecording = () => {
     if (isRecording) {
@@ -209,30 +207,30 @@ export default function AudioSupportPage() {
 
     try {
       const request: AudioSupportRequest = {
-        name,
-        email,
-        phone,
+        name: nameRef.current,
+        email: emailRef.current,
+        phone: phoneRef.current,
         audioFile: audioBlob,
       };
 
       let result;
-      if(newResponse){
-         result = await submitAudioSupportRequest(request);
+      if (newResponse) {
+        result = await submitAudioSupportRequest(request);
 
-      if (result.success) {
-        setResponse(result);
+        if (result.success) {
+          setResponse(result);
+        } else {
+          throw new Error(result.error || "Failed to submit audio request");
+        }
       } else {
-        throw new Error(result.error || "Failed to submit audio request");
-      }
-      }else{
         const previousConversation = await fetchLatestCustomerTicket();
         result = await submitAudioSupportRequest(request, previousConversation.Query);
 
-      if (result.success) {
-        setResponse(result);
-      } else {
-        throw new Error(result.error || "Failed to submit audio request");
-      }
+        if (result.success) {
+          setResponse(result);
+        } else {
+          throw new Error(result.error || "Failed to submit audio request");
+        }
       }
       
     } catch (err) {
@@ -313,7 +311,7 @@ export default function AudioSupportPage() {
              setResponse(null)
              setAudioBlob(null)
              setAudioUrl(null)
-             setnewResponse(false)
+             setNewResponse(false)
            }}
            className="w-full sm:w-auto bg-blue-600/80 hover:bg-blue-700/90 text-white font-medium py-2 px-6 rounded-lg transition-all duration-300 flex items-center justify-center backdrop-blur-sm shadow-sm">
              <svg
@@ -337,7 +335,7 @@ export default function AudioSupportPage() {
              setResponse(null)
              setAudioBlob(null)
              setAudioUrl(null)
-             setnewResponse(true)
+             setNewResponse(true)
            }}
            className="w-full sm:w-auto bg-transparent border border-blue-500/50 hover:border-blue-600/70 text-blue-400 font-medium py-2 px-6 rounded-lg transition-all duration-300 flex items-center justify-center backdrop-blur-sm shadow-sm">
              <svg
@@ -371,7 +369,7 @@ export default function AudioSupportPage() {
        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-300/20 rounded-full mix-blend-overlay"></div>
      </div>
       ) : (
-        <div className="relative  bg-gradient-to-br from-black via-blue-900 to-black">
+        <div className="relative bg-gradient-to-br from-black via-blue-900 to-black">
         {/* Optional subtle pattern overlay */}
         <div className="absolute inset-0 z-0 opacity-10" 
              style={{ backgroundImage: "url('https://cdnjs.cloudflare.com/ajax/libs/pattern.css/1.0.0/pattern.svg')", backgroundSize: "cover" }}>
@@ -408,10 +406,7 @@ export default function AudioSupportPage() {
                 {isRecording && (
                   <div className={`absolute inset-0 rounded-full border-4 ${
                     voiceActive ? "border-blue-400/70" : "border-blue-400/30"
-                  } transition-all duration-100`}
-                    style={{
-                      borderWidth: voiceActive ? `${4 + voiceIntensity / 25}px` : "4px",
-                    }}>
+                  } transition-all duration-100`}>
                   </div>
                 )}
       
@@ -499,7 +494,7 @@ export default function AudioSupportPage() {
             <div className="mt-10 border-t border-blue-400/10 pt-6 text-center">
               <p className="mb-4 text-sm leading-relaxed text-blue-100/70">
                 By submitting a voice request, you agree to our terms of service
-                and privacy policy. We'll call you back as soon as possible to
+                and privacy policy. We&apos;ll call you back as soon as possible to
                 help with your issue.
               </p>
       

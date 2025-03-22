@@ -15,6 +15,17 @@ interface UserData {
   phone?: string; // Added phone number field
 }
 
+interface FaceAPI {
+  nets: {
+    tinyFaceDetector: { loadFromUri: (url: string) => Promise<void> };
+    faceLandmark68Net: { loadFromUri: (url: string) => Promise<void> };
+    faceRecognitionNet: { loadFromUri: (url: string) => Promise<void> };
+  };
+  TinyFaceDetectorOptions: new () => unknown;
+  detectSingleFace: (input: HTMLVideoElement | HTMLImageElement, options: unknown) => Promise<any>;
+  euclideanDistance: (descriptor1: Float32Array, descriptor2: Float32Array) => number;
+}
+
 interface EnhancedImageResult {
   originalUrl: string;
   outputUrl: string;
@@ -64,16 +75,13 @@ const EnhancedFaceAuth: React.FC = () => {
         console.log("Starting to load face-api.js models...");
         
         // Check if face-api is available
-        interface WindowWithFaceApi extends Window {
-  faceapi?: any; // Or better, define the actual type of faceapi
-}
 
-        if (typeof (window as any).faceapi === 'undefined') {
+        if (typeof (window as Window & { faceapi?: unknown }).faceapi === 'undefined') {
           window.location.reload();
           throw new Error('Face API library not loaded. Check your internet connection or try a different browser.');
         }
         
-        const faceapi = (window as any).faceapi;
+        const faceapi = (window as Window & { faceapi: FaceAPI }).faceapi;
         // Set the models URL to a reliable CDN
         const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.2/model/';
         
@@ -103,7 +111,8 @@ const EnhancedFaceAuth: React.FC = () => {
         
         // Load failed authentication attempts
         loadFailedAuthAttempts();
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         console.error('Error loading models:', error);
         updateStatus(`Failed to load models: ${error.message}`, 'error');
       }

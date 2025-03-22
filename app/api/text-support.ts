@@ -25,6 +25,7 @@ export interface SupportResponse {
   analysis?: GroqAnalysisResponse;
   requestData: SupportRequest;
   error?: string;
+  callStatus?: boolean; // Added to use the call result
 }
 
 // Function to analyze support request using Groq
@@ -209,11 +210,13 @@ export async function submitSupportRequest(request: SupportRequest): Promise<Sup
     }
     
     // Return success response with ticket ID, analysis, and the original request data
+    // Now we use callResult in the response
     return {
       success: sheetResult,
       ticketId,
       analysis,
-      requestData: request
+      requestData: request,
+      callStatus: callResult // Include call status in the response
     };
   } catch (error) {
     console.error('Error submitting support request:', error);

@@ -10,6 +10,27 @@ import {
 } from '@/app/api/InvestmentApi'; // Update this path to match your project structure
 import "@/app/styles/Investment.css";
 
+// Define proper types for market data
+interface MarketData {
+  'Global Quote'?: {
+    '05. price'?: string;
+    '09. change'?: string;
+    '10. change percent'?: string;
+  };
+}
+
+interface BondYields {
+  // Define properties as needed
+  rate?: number;
+  date?: string;
+}
+
+interface IndianMarketData {
+  nifty50: number;
+  sensex: number;
+  dailyChange: number;
+}
+
 const InvestmentAdvisor: React.FC = () => {
   const [formData, setFormData] = useState<InvestmentFormData>({
     savingsAmount: 10000,
@@ -24,9 +45,9 @@ const InvestmentAdvisor: React.FC = () => {
   const [hasResults, setHasResults] = useState<boolean>(false);
   const [isCustomizing, setIsCustomizing] = useState<boolean>(false);
   const [customAllocations, setCustomAllocations] = useState<Record<string, number>>({});
-  const [marketData, setMarketData] = useState<any>(null);
-  const [bondYields, setBondYields] = useState<any>(null);
-  const [indianMarketData, setIndianMarketData] = useState<any>(null);
+  const [marketData, setMarketData] = useState<MarketData | null>(null);
+  const [bondYields, setBondYields] = useState<BondYields | null>(null);
+  const [indianMarketData, setIndianMarketData] = useState<IndianMarketData | null>(null);
   const [currencySymbol, setCurrencySymbol] = useState<string>('$');
   const [error, setError] = useState<string | null>(null);
 
@@ -114,7 +135,8 @@ const InvestmentAdvisor: React.FC = () => {
         setRecommendations(result.recommendations);
         setMarketData(result.marketData);
         setBondYields(result.bondYields);
-        setIndianMarketData(result.indianMarketData);
+        // Fix the main error here with proper typing
+        setIndianMarketData(result.indianMarketData as IndianMarketData);
         setCurrencySymbol(result.currencySymbol);
       } else {
         setRecommendations(result.recommendations);
@@ -162,7 +184,7 @@ const InvestmentAdvisor: React.FC = () => {
   };
 
   // Format currency for display
-  const displayCurrency = (amount: number) => {
+  const formatDisplayCurrency = (amount: number) => {
     return formatCurrency(amount, formData.currency);
   };
 
@@ -514,7 +536,7 @@ const InvestmentAdvisor: React.FC = () => {
                 <p className="insight-text">
                   Your {formData.timeHorizon}-year investment horizon for {formData.investmentGoal === 'wealth' ? 'wealth building' : formData.investmentGoal} 
                   allows for {formData.timeHorizon < 5 ? 'shorter-term strategies focused on stability' : 'longer-term strategies that can weather market cycles'}. 
-                  We've aligned asset allocations with this timeframe.
+                  We&apos;ve aligned asset allocations with this timeframe.
                 </p>
               </div>
               <div className="insight-card">
@@ -544,7 +566,7 @@ const InvestmentAdvisor: React.FC = () => {
                 <div className="step-content">
                   <h4 className="step-title">Open Investment Accounts</h4>
                   <p className="step-text">
-                    Set up brokerage accounts if you don't already have them. Consider tax-advantaged accounts when applicable.
+                    Set up brokerage accounts if you don&apos;t already have them. Consider tax-advantaged accounts when applicable.
                   </p>
                 </div>
               </div>

@@ -1,16 +1,14 @@
-// The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import Image from 'next/image';
 import Header from '@/app/components/HomeHeader';
 import Footer from '@/app/components/Footer';
 
 const Home: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showVoiceInput, setShowVoiceInput] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
-  const [balance, setBalance] = useState('184,392.75');
   const [isFaceScanning, setIsFaceScanning] = useState(false);
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -106,7 +104,7 @@ const Home: React.FC = () => {
       <div className="container mx-auto px-8 py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Next-Generation Banking Features</h2>
-          <p className="text-xl text-gray-400">Experience banking that's smarter, faster, and more secure</p>
+          <p className="text-xl text-gray-400">Experience banking that&apos;s smarter, faster, and more secure</p>
         </div>
 
         <div className="grid grid-cols-2 gap-16 items-center">
@@ -130,11 +128,14 @@ const Home: React.FC = () => {
             ))}
           </div>
           <div className="relative">
-            <img 
-              src={featureImageUrl} 
-              alt="Banking Features" 
-              className="rounded-xl w-full h-[500px] object-cover"
-            />
+            <div className="relative w-full h-[500px]">
+              <Image 
+                src={featureImageUrl} 
+                alt="Banking Features" 
+                fill
+                className="rounded-xl object-cover"
+              />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-[#080810] to-transparent rounded-xl"></div>
           </div>
         </div>

@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import * as echarts from 'echarts';
+import { useRouter } from 'next/navigation';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { useRouter } from 'next/navigation'; // Import for routing
+import Image from 'next/image';
 
 const App: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -10,7 +10,7 @@ const App: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,11 +59,15 @@ const App: React.FC = () => {
 
           <div className="bg-black/40 backdrop-blur-xl rounded-2xl p-8 border border-cyan-500/30 shadow-[0_0_50px_rgba(0,255,255,0.1)]">
             <div className="mb-8 text-center">
-              <img 
-                src="https://public.readdy.ai/ai/img_res/5036c688411a86060f03212aeb7c33b5.jpg"
-                alt="Security Emblem"
-                className="w-20 h-20 mx-auto mb-4 rounded-full"
-              />
+              <div className="relative w-20 h-20 mx-auto mb-4">
+                <Image 
+                  src="https://public.readdy.ai/ai/img_res/5036c688411a86060f03212aeb7c33b5.jpg"
+                  alt="Security Emblem"
+                  className="rounded-full"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
               <h1 className="text-2xl font-bold text-white mb-2">Secure Access Portal</h1>
               <p className="text-cyan-400/80 text-sm">Two Factor Verification Enabled</p>
             </div>
@@ -119,7 +123,7 @@ const App: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full !rounded-button py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-300 cursor-pointer whitespace-nowrap"
+                className="w-full rounded-lg py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-300 cursor-pointer whitespace-nowrap"
                 disabled={isLoading}
               >
                 {isLoading ? (
