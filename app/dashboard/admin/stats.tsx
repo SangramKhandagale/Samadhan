@@ -28,7 +28,7 @@ const Stats: React.FC = () => {
           loading: false,
           error: null,
         });
-      } catch (_) {
+      } catch {
         setTicketStats(prev => ({
           ...prev,
           loading: false,

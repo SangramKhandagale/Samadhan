@@ -21,8 +21,8 @@ interface FaceAPI {
     faceLandmark68Net: { loadFromUri: (url: string) => Promise<void> };
     faceRecognitionNet: { loadFromUri: (url: string) => Promise<void> };
   };
-  TinyFaceDetectorOptions: new () => unknown;
-  detectSingleFace: (input: HTMLVideoElement | HTMLImageElement, options: unknown) => Promise<any>;
+  TinyFaceDetectorOptions: new () => any; // Changed type to accept any constructor
+  detectSingleFace: (input: HTMLVideoElement | HTMLImageElement, options: any) => any; // Changed return type
   euclideanDistance: (descriptor1: Float32Array, descriptor2: Float32Array) => number;
 }
 
@@ -45,7 +45,10 @@ declare global {
   }
 }
 
-const EnhancedFaceAuth: React.FC = () => {
+// Added props interface even though not using any props
+interface EnhancedFaceAuthProps {}
+
+const EnhancedFaceAuth: React.FC<EnhancedFaceAuthProps> = (props) => {
   const [isModelLoaded, setIsModelLoaded] = useState<boolean>(false);
   const [registeredUsername, setRegisteredUsername] = useState<string | null>(null);
   const [registeredFaceDescriptor, setRegisteredFaceDescriptor] = useState<Float32Array | null>(null);
@@ -275,6 +278,19 @@ const EnhancedFaceAuth: React.FC = () => {
     }
   };
 
+  // Helper function for face detection and extraction of descriptors
+  const detectFaceAndExtractDescriptor = async (element: HTMLVideoElement | HTMLImageElement) => {
+    const detector = window.faceapi.detectSingleFace(element, new window.faceapi.TinyFaceDetectorOptions());
+    if (!detector) return null;
+    
+    // Fixed chaining by properly handling the promise resolution
+    const withLandmarks = await detector.withFaceLandmarks();
+    if (!withLandmarks) return null;
+    
+    const withDescriptor = await withLandmarks.withFaceDescriptor();
+    return withDescriptor;
+  };
+
   return (
     <>
       <Script
@@ -395,20 +411,20 @@ const EnhancedFaceAuth: React.FC = () => {
                 <div className="original-image-container">
                   <h3 className="image-title">Original Image</h3>
                   <div className="image-display">
-                    <Image
-                      src={previewImageRef.current?.src || ''}
+                    <img
+                      src=""
                       alt="Original"
                       width={400}
                       height={400}
                       ref={previewImageRef}
-                      className="preview-image"
+                      className="preview-image hidden"
                     />
                   </div>
                 </div>
                 <div className="enhanced-image-container">
                   <h3 className="image-title">Enhanced Image (4x)</h3>
                   <div className="image-display">
-                    <Image
+                    <img
                       src={enhancedImage?.outputUrl || ''}
                       alt="Enhanced"
                       width={400}
@@ -442,15 +458,16 @@ const EnhancedFaceAuth: React.FC = () => {
                     updateStatus('Processing enhanced image for registration...', 'info');
                     const imageToProcess = enhancedImage ? enhancedImage.outputUrl : URL.createObjectURL(fileInputRef.current.files[0]);
                     const img = await createImageFromUrl(imageToProcess);
-                    const results = await window.faceapi
-                      .detectSingleFace(img, new window.faceapi.TinyFaceDetectorOptions())
-                      .withFaceLandmarks()
-                      .withFaceDescriptor();
+                    
+                    // Using the helper function for face detection
+                    const results = await detectFaceAndExtractDescriptor(img);
+                    
                     if (!results) {
                       updateStatus('No face detected in the image! Please try another image.', 'error');
                       setIsRegistering(false);
                       return;
                     }
+                    
                     setRegisteredFaceDescriptor(results.descriptor);
                     const trimmedUsername = username.trim();
                     setRegisteredUsername(trimmedUsername);
@@ -547,17 +564,25 @@ const EnhancedFaceAuth: React.FC = () => {
                   try {
                     setIsAuthenticating(true);
                     updateStatus('Authenticating... Keep your face visible.', 'info');
-                    const results = await window.faceapi
-                      .detectSingleFace(videoRef.current!, new window.faceapi.TinyFaceDetectorOptions())
-                      .withFaceLandmarks()
-                      .withFaceDescriptor();
+                    
+                    if (!videoRef.current) {
+                      updateStatus('Video not available. Please ensure camera access is granted.', 'error');
+                      setIsAuthenticating(false);
+                      return;
+                    }
+                    
+                    // Using the helper function for face detection
+                    const results = await detectFaceAndExtractDescriptor(videoRef.current);
+                    
                     if (!results) {
                       updateStatus('No face detected in camera! Please ensure your face is clearly visible.', 'warning');
                       setIsAuthenticating(false);
                       return;
                     }
+                    
                     const distance = window.faceapi.euclideanDistance(results.descriptor, registeredFaceDescriptor);
                     console.log('Face match distance:', distance);
+                    
                     if (distance < 0.47) {
                       const toastId = toast.loading("Authenticating...");
                       setTimeout(() => {
