@@ -47,8 +47,6 @@ const InvestmentAdvisor: React.FC = () => {
   const [customAllocations, setCustomAllocations] = useState<Record<string, number>>({});
   const [marketData, setMarketData] = useState<MarketData | null>(null);
   const [bondYields, setBondYields] = useState<BondYields | null>(null);
-  const [indianMarketData, setIndianMarketData] = useState<IndianMarketData | null>(null);
-  const [currencySymbol, setCurrencySymbol] = useState<string>('$');
   const [error, setError] = useState<string | null>(null);
 
   // Handle form input changes
@@ -90,7 +88,6 @@ const InvestmentAdvisor: React.FC = () => {
       ...formData,
       currency: e.target.value
     });
-    setCurrencySymbol(getCurrencySymbol(e.target.value));
   };
 
   // Handle allocation slider changes
@@ -135,12 +132,8 @@ const InvestmentAdvisor: React.FC = () => {
         setRecommendations(result.recommendations);
         setMarketData(result.marketData);
         setBondYields(result.bondYields);
-        // Fix the main error here with proper typing
-        setIndianMarketData(result.indianMarketData as IndianMarketData);
-        setCurrencySymbol(result.currencySymbol);
       } else {
         setRecommendations(result.recommendations);
-        setCurrencySymbol(result.currencySymbol);
         // Convert undefined to null to match the expected type
         setError(result.error || null);
       }
@@ -173,19 +166,12 @@ const InvestmentAdvisor: React.FC = () => {
     });
     setRecommendations([]);
     setHasResults(false);
-    setIndianMarketData(null);
-    setCurrencySymbol('$');
     setError(null);
   };
 
   // Calculate investment amounts based on allocations
   const calculateAmount = (allocation: number) => {
     return (formData.savingsAmount * allocation) / 100;
-  };
-
-  // Format currency for display
-  const formatDisplayCurrency = (amount: number) => {
-    return formatCurrency(amount, formData.currency);
   };
 
   // Get trend indicator (just for UI demonstration)

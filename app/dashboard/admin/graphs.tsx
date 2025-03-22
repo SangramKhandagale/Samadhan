@@ -15,7 +15,7 @@ const Graphs: React.FC = () => {
         const data = await fetchCustomerTickets();
         setTickets(data);
         setLoading(false);
-      } catch (error) {
+      } catch {
         setErrorMessage("Failed to load ticket data");
         setLoading(false);
       }
