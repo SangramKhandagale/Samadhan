@@ -1,0 +1,443 @@
+/* Enhanced Investment Advisor Styles - Import this CSS file in your component */
+
+/* Add these classes to your JSX elements for enhanced effects:
+   - Add 'animated-bg' class to the main container
+   - Add 'particle-container' class to the header section  
+   - Add 'glow-card' class to form cards
+   - Add 'enhanced-button' class to buttons
+   - Add 'floating-card' class to recommendation cards
+   - Add 'enhanced-progress' class to progress bar containers
+   - Add 'enhanced-progress-fill' class to progress bar fills
+   - Add 'glass-effect' class to summary boxes
+   - Add 'text-glow' class to main headings
+   - Add 'asset-card' class to asset recommendation cards
+   - Add 'footer-link' class to footer links
+   - Add 'gpu-accelerated' class to animated elements
+   - Add 'grid-animate' class to grid containers
+*/
+
+/* Global Enhancements */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #32CD32 #f0fff0;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f0fff0;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #7FFF00, #32CD32);
+  border-radius: 10px;
+  border: 2px solid #f0fff0;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #32CD32, #7FFF00);
+}
+
+/* Enhanced Background Animations */
+.animated-bg {
+  background: linear-gradient(-45deg, #f8fff8, #f0fff0, #e6ffe6, #f8fff8);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Advanced Particle System */
+.particle-container::before,
+.particle-container::after {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(127, 255, 0, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: floatingOrbs 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.particle-container::before {
+  top: 10%;
+  left: -5%;
+  animation-delay: -7s;
+}
+
+.particle-container::after {
+  bottom: 10%;
+  right: -5%;
+  animation-delay: -3s;
+}
+
+@keyframes floatingOrbs {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+  25% { transform: translate(50px, -30px) scale(1.1); opacity: 0.5; }
+  50% { transform: translate(-30px, 50px) scale(0.9); opacity: 0.4; }
+  75% { transform: translate(40px, 20px) scale(1.05); opacity: 0.6; }
+}
+
+/* Enhanced Input Styles */
+input[type="number"],
+input[type="text"],
+select {
+  color: #1a1a1a !important;
+  font-weight: 500 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  color: #000000 !important;
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: #32CD32 !important;
+  box-shadow: 0 0 0 3px rgba(50, 205, 50, 0.1), 
+              0 10px 25px rgba(50, 205, 50, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+input[type="number"]::placeholder,
+input[type="text"]::placeholder {
+  color: #666666 !important;
+  font-weight: 400 !important;
+}
+
+/* Glowing Effects for Cards */
+.glow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #7FFF00, #32CD32, #9AFF9A, #7FFF00);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+.glow-card:hover::before {
+  opacity: 0.7;
+}
+
+@keyframes borderGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Enhanced Button Animations */
+.enhanced-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #32CD32, #7FFF00);
+  background-size: 200% 200%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.enhanced-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.enhanced-button:hover::before {
+  left: 100%;
+}
+
+.enhanced-button:hover {
+  background-position: 100% 0%;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(50, 205, 50, 0.4);
+}
+
+/* Floating Animation for Cards */
+.floating-card {
+  animation: gentleFloat 6s ease-in-out infinite;
+}
+
+.floating-card:nth-child(even) {
+  animation-delay: -3s;
+}
+
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(0.5deg); }
+}
+
+/* Enhanced Progress Bars */
+.enhanced-progress {
+  background: linear-gradient(90deg, #e5e7eb, #f3f4f6);
+  position: relative;
+  overflow: hidden;
+}
+
+.enhanced-progress::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.enhanced-progress-fill {
+  background: linear-gradient(135deg, #32CD32, #7FFF00, #32CD32);
+  background-size: 200% 200%;
+  animation: gradientMove 3s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.enhanced-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+  animation: progressShine 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes gradientMove {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes progressShine {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+/* Advanced Range Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 8px;
+}
+
+input[type="range"]::-webkit-slider-track {
+  background: linear-gradient(90deg, #e5e7eb, #f3f4f6);
+  height: 8px;
+  border-radius: 4px;
+  position: relative;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #32CD32, #7FFF00);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(50, 205, 50, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 6px 20px rgba(50, 205, 50, 0.6);
+}
+
+input[type="range"]::-moz-range-track {
+  background: linear-gradient(90deg, #e5e7eb, #f3f4f6);
+  height: 8px;
+  border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #32CD32, #7FFF00);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(50, 205, 50, 0.4);
+}
+
+/* Glassmorphism Effects */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Text Animations */
+.text-glow {
+  text-shadow: 0 0 20px rgba(50, 205, 50, 0.3);
+  animation: textPulse 4s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(50, 205, 50, 0.3); }
+  50% { text-shadow: 0 0 30px rgba(50, 205, 50, 0.5), 0 0 40px rgba(127, 255, 0, 0.3); }
+}
+
+/* Advanced Hover Effects for Asset Cards */
+.asset-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.asset-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(50, 205, 50, 0.05), rgba(127, 255, 0, 0.05));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.asset-card:hover::before {
+  opacity: 1;
+}
+
+.asset-card:hover {
+  transform: translateY(-8px) rotateX(5deg);
+  box-shadow: 
+    0 20px 40px rgba(50, 205, 50, 0.15),
+    0 0 0 1px rgba(50, 205, 50, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Loading Animation Enhancements */
+.loading-pulse {
+  animation: loadingPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+/* Enhanced Footer Animations */
+.footer-link {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #32CD32, #7FFF00);
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .floating-card {
+    animation: none;
+  }
+  
+  .particle-container::before,
+  .particle-container::after {
+    display: none;
+  }
+}
+
+/* Custom Selection Colors */
+::selection {
+  background: rgba(50, 205, 50, 0.3);
+  color: #1a2332;
+}
+
+::-moz-selection {
+  background: rgba(50, 205, 50, 0.3);
+  color: #1a2332;
+}
+
+/* Enhanced Focus Indicators */
+button:focus,
+input:focus,
+select:focus {
+  outline: 3px solid rgba(50, 205, 50, 0.5);
+  outline-offset: 2px;
+}
+
+/* Smooth Transitions for All Interactive Elements */
+* {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+/* Advanced Grid Animations */
+@keyframes gridFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.grid-animate > * {
+  animation: gridFadeIn 0.6s ease forwards;
+}
+
+.grid-animate > *:nth-child(1) { animation-delay: 0.1s; }
+.grid-animate > *:nth-child(2) { animation-delay: 0.2s; }
+.grid-animate > *:nth-child(3) { animation-delay: 0.3s; }
+.grid-animate > *:nth-child(4) { animation-delay: 0.4s; }
+.grid-animate > *:nth-child(5) { animation-delay: 0.5s; }
+.grid-animate > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* High Performance GPU Acceleration */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
