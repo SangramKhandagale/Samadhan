@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Volume2, VolumeX, MessageCircle, Trash2, ChevronRight, Sparkles, Shield, Activity } from 'lucide-react';
-import { processAudioQuery, AudioMessage, VoiceResponse } from '@/app/query_solver/audio-support';
+import { processAudioQuery, AudioMessage, VoiceResponse } from '@/app/support/support_API/audio-support';
 import { motion, AnimatePresence, m } from 'framer-motion';
 import '@/app/styles/audio.css';
 
@@ -32,6 +32,7 @@ const AudioQuerySolver: React.FC<AudioQuerySolverProps> = ({ onResponse }) => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -70,8 +71,12 @@ const AudioQuerySolver: React.FC<AudioQuerySolverProps> = ({ onResponse }) => {
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
+    scrollToBottom();
+  }, [messages, liveTranscription, isProcessing]);
+
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  };
 
   // Initialize audio context for visualization
   useEffect(() => {
@@ -584,7 +589,11 @@ const AudioQuerySolver: React.FC<AudioQuerySolverProps> = ({ onResponse }) => {
               </div>
             </div>
 
-            <div className="h-[400px] overflow-y-auto bg-gradient-to-b from-[#7FFF00]/5 to-[#32CD32]/5 rounded-2xl p-4 mb-6">
+            {/* Chat container with fixed height and proper scrolling */}
+            <div 
+              className="h-[400px] overflow-y-auto bg-gradient-to-b from-[#7FFF00]/5 to-[#32CD32]/5 rounded-2xl p-4 mb-6"
+              ref={messagesContainerRef}
+            >
               {messages.length === 0 && !isProcessing && (
                 <motion.div 
                   className="welcome-message text-center py-12"
@@ -603,12 +612,10 @@ const AudioQuerySolver: React.FC<AudioQuerySolverProps> = ({ onResponse }) => {
                   <p className="text-[#1a2332]/80 mb-6">Speak to me in English or Hindi about:</p>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
                     {[
-                    
                       '✅ Card services and payments',
                       '✅ Loan types and eligibility',
                       '✅ Investment options',
                       '✅ Banking procedures',
-                      
                     ].map((item, i) => (
                       <motion.li 
                         key={i}
@@ -628,80 +635,82 @@ const AudioQuerySolver: React.FC<AudioQuerySolverProps> = ({ onResponse }) => {
                 </motion.div>
               )}
 
-              <AnimatePresence>
-                {messages.map((message, index) => (
-                  <motion.div 
-                    key={message.id}
-                    className={`flex mb-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {message.role === 'assistant' && (
-                      <div className="w-8 h-8 bg-gradient-to-r from-[#7FFF00] to-[#32CD32] rounded-full flex items-center justify-center mr-3">
-                        <Sparkles className="w-4 h-4 text-[#1a2332]" />
+              <div className="flex flex-col gap-4">
+                <AnimatePresence>
+                  {messages.map((message, index) => (
+                    <motion.div 
+                      key={message.id}
+                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {message.role === 'assistant' && (
+                        <div className="w-8 h-8 bg-gradient-to-r from-[#7FFF00] to-[#32CD32] rounded-full flex items-center justify-center mr-3">
+                          <Sparkles className="w-4 h-4 text-[#1a2332]" />
+                        </div>
+                      )}
+                      <div className={`max-w-[80%] p-4 rounded-2xl ${
+                        message.role === 'user' 
+                          ? 'bg-[#1a2332] text-white' 
+                          : 'bg-white text-[#1a2332] shadow-md border border-[#7FFF00]/20'
+                      }`}>
+                        <div className="message-text">{message.content}</div>
+                        <div className="text-xs mt-2 opacity-70">
+                          {message.timestamp.toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                          <span className="ml-2">
+                            {getLanguageDisplay(message.language)}
+                          </span>
+                        </div>
                       </div>
-                    )}
-                    <div className={`max-w-[80%] p-4 rounded-2xl ${
-                      message.role === 'user' 
-                        ? 'bg-[#1a2332] text-white' 
-                        : 'bg-white text-[#1a2332] shadow-md border border-[#7FFF00]/20'
-                    }`}>
-                      <div className="message-text">{message.content}</div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {isProcessing && (
+                  <motion.div 
+                    className="flex"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-[#7FFF00] to-[#32CD32] rounded-full flex items-center justify-center mr-3">
+                      <Sparkles className="w-4 h-4 text-[#1a2332]" />
+                    </div>
+                    <div className="bg-white text-[#1a2332] p-4 rounded-2xl shadow-md border border-[#7FFF00]/20">
+                      <div className="flex gap-2">
+                        <div className="w-2 h-2 bg-[#32CD32] rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-[#32CD32] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 bg-[#32CD32] rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                      </div>
+                      <div className="text-xs mt-2 opacity-70">Processing...</div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {liveTranscription && isListening && (
+                  <motion.div 
+                    className="flex justify-end"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <div className="bg-[#1a2332]/80 text-white p-4 rounded-2xl">
+                      <div className="message-text">
+                        {liveTranscription}
+                        <span className="ml-1 opacity-70 animate-pulse">|</span>
+                      </div>
                       <div className="text-xs mt-2 opacity-70">
-                        {message.timestamp.toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                        <span className="ml-2">
-                          {getLanguageDisplay(message.language)}
-                        </span>
+                        Speaking... 
+                        {isUrduDetected && <span className="ml-2">(Converting Urdu to Hindi)</span>}
                       </div>
                     </div>
                   </motion.div>
-                ))}
-              </AnimatePresence>
+                )}
 
-              {isProcessing && (
-                <motion.div 
-                  className="flex mb-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <div className="w-8 h-8 bg-gradient-to-r from-[#7FFF00] to-[#32CD32] rounded-full flex items-center justify-center mr-3">
-                    <Sparkles className="w-4 h-4 text-[#1a2332]" />
-                  </div>
-                  <div className="bg-white text-[#1a2332] p-4 rounded-2xl shadow-md border border-[#7FFF00]/20">
-                    <div className="flex gap-2">
-                      <div className="w-2 h-2 bg-[#32CD32] rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-[#32CD32] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-[#32CD32] rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
-                    <div className="text-xs mt-2 opacity-70">Processing...</div>
-                  </div>
-                </motion.div>
-              )}
-
-              {liveTranscription && isListening && (
-                <motion.div 
-                  className="flex mb-4 justify-end"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  <div className="bg-[#1a2332]/80 text-white p-4 rounded-2xl">
-                    <div className="message-text">
-                      {liveTranscription}
-                      <span className="ml-1 opacity-70 animate-pulse">|</span>
-                    </div>
-                    <div className="text-xs mt-2 opacity-70">
-                      Speaking... 
-                      {isUrduDetected && <span className="ml-2">(Converting Urdu to Hindi)</span>}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} />
+              </div>
             </div>
 
             <div className="flex flex-col items-center">
@@ -745,7 +754,6 @@ const AudioQuerySolver: React.FC<AudioQuerySolverProps> = ({ onResponse }) => {
               </motion.p>
               
               <div className="mt-4 text-sm text-[#1a2332]/60">
-               
                 {isUrduDetected && (
                   <span className="ml-2">
                     • Urdu automatically converted to Hindi
