@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { enhanceImageForFaceAPI, validateForFaceAPI } from '@/app/FaceAuth/Face_API/ImageEnhancementService';
-import LoadingIndicator from '@/app/FaceAuth/LoadingIndicator';
+import LoadingIndicator from '@/app/FaceAuth/Components/LoadingIndicator';
 import LocalStorageService from '@/app/FaceAuth/Face_API/LocalStorageService';
 import EnhancedFaceApiService from '@/app/FaceAuth/Face_API/FaceApiService';
-import { detectAadhaarCard } from '@/app/Emergency/Emergency_API/Verification';
+import { detectAadhaarCard } from '../Face_API/Verification';
 import "@/app/styles/registration.css"
 
 // Define types 

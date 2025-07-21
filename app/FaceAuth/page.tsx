@@ -4,11 +4,18 @@ import Script from 'next/script';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import "@/app/styles/FaceAuth.css";
-import RegistrationPanel from '@/app/FaceAuth/RegistrationPanel';
-import AuthenticationPanel from '@/app/FaceAuth/AuthenticationPanel';
+import RegistrationPanel from '@/app/FaceAuth/Components/RegistrationPanel';
+import AuthenticationPanel from '@/app/FaceAuth/Components/AuthenticationPanel';
 import { blandApiService} from '@/app/FaceAuth/Face_API/BlandApiService';
-import { UserData, EnhancedImageResult, AuthFailureLog } from '@/app/FaceAuth/Face_API/types';
 import LocalStorageService from '@/app/FaceAuth/Face_API/LocalStorageService';
+
+// Type definition for failed authentication log
+type AuthFailureLog = {
+  timestamp: number;
+  username: string;
+  attempts: number;
+  notificationSent: boolean;
+};
 
 // StatusMessage Component
 const StatusMessage: React.FC<{ message: string; type: 'info' | 'success' | 'warning' | 'error' }> = ({ message, type }) => {

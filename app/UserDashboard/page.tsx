@@ -124,7 +124,7 @@ const Dashboard = () => {
       icon: Target, 
       color: 'from-[#ADFF2F] to-[#32CD32]',
       description: 'Track your progress',
-      onClick: () => router.push('/Goals')
+      onClick: () => router.push('/FinancialGoals')
     }
   ], [router]);
 
