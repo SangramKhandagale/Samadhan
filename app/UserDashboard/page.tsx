@@ -6,7 +6,7 @@ import {
   Eye, EyeOff, Send, TrendingUp, Target, PieChart,
   Bell, Settings, ArrowUpRight, ChevronRight, Zap,
   MessageCircle, HelpCircle, Wallet, ShoppingBag,
-  Smartphone, Briefcase, Coffee, Car
+  Smartphone, Briefcase, Coffee, Car, Scan, Mic, Sparkles, Shield, Activity
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -30,11 +30,11 @@ const Dashboard = () => {
 
   // Optimized particle data - reduced count and complexity
   const particles = useMemo(() => 
-    Array.from({ length: 8 }, (_, i) => ({
+    Array.from({ length: 30 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 4 + 2,
+      size: Math.random() * 6 + 3,
       delay: Math.random() * 2
     })), []);
 
@@ -130,23 +130,22 @@ const Dashboard = () => {
 
   // Simplified, performance-optimized animation variants
   const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 50 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
       transition: {
         delay: i * 0.1,
-        duration: 0.5,
-        ease: "easeOut"
+        duration: 0.6,
+        type: "spring",
+        stiffness: 100
       }
     }),
-    hover: shouldReduceMotion ? {} : {
-      y: -4,
-      transition: { 
-        type: "tween", 
-        duration: 0.2,
-        ease: "easeOut"
-      }
+    hover: {
+      scale: 1.03,
+      y: -10,
+      boxShadow: "0 25px 35px -5px rgba(50, 205, 50, 0.25)",
+      transition: { type: "spring", stiffness: 300 }
     }
   };
 
@@ -175,7 +174,7 @@ const Dashboard = () => {
 
   // Optimized time update with reduced frequency
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 10000); // Update every 10 seconds instead of every second
+    const timer = setInterval(() => setCurrentTime(new Date()), 10000);
     const cardTimer = setTimeout(() => setAnimateCards(true), 300);
     return () => {
       clearInterval(timer);
@@ -201,163 +200,177 @@ const Dashboard = () => {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f8fff8] via-[#f0fff0] to-[#e8ffe8] relative overflow-hidden">
-      {/* Simplified Background Elements - Only show if motion is not reduced */}
+    <div className="min-h-screen bg-gradient-to-br from-[#f8fff8] to-[#f0fff0] relative overflow-hidden">
+      {/* Animated Background Elements */}
       {!shouldReduceMotion && (
-        <>
-          {/* Reduced particle count and simpler animations */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {particles.map((particle) => (
-              <motion.div
-                key={particle.id}
-                className="absolute rounded-full bg-[#32CD32]/6"
-                style={{
-                  left: `${particle.x}%`,
-                  top: `${particle.y}%`,
-                  width: particle.size,
-                  height: particle.size
-                }}
-                animate={{
-                  y: [-20, 20, -20],
-                  opacity: [0.3, 0.6, 0.3]
-                }}
-                transition={{
-                  duration: 8 + particle.id,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: particle.delay
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Simplified background orbs */}
-          <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {particles.map((particle) => (
             <motion.div
-              className="absolute top-1/4 left-1/6 w-80 h-80 bg-gradient-to-r from-[#7FFF00]/3 to-[#32CD32]/2 rounded-full blur-3xl"
+              key={particle.id}
+              className="absolute bg-white/20 rounded-full backdrop-blur-sm"
+              style={{
+                left: `${particle.x}%`,
+                top: `${particle.y}%`,
+                width: particle.size,
+                height: particle.size,
+              }}
               animate={{
-                scale: [1, 1.1, 1],
+                y: [-20, 20, -20],
+                x: [-10, 10, -10],
+                rotate: [0, 180, 360],
               }}
               transition={{
-                duration: 15,
+                duration: 6 + particle.id * 0.2,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
             />
-            <motion.div
-              className="absolute bottom-1/4 right-1/6 w-64 h-64 bg-gradient-to-r from-[#32CD32]/2 to-[#9AFF9A]/1 rounded-full blur-3xl"
-              animate={{
-                scale: [1, 0.9, 1],
-              }}
-              transition={{
-                duration: 12,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          </div>
-        </>
+          ))}
+        </div>
       )}
 
-      {/* Header - Simplified animations */}
+      {/* Header */}
       <motion.header 
-        className="bg-white/85 backdrop-blur-xl border-b border-[#32CD32]/20 shadow-xl relative z-10"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="relative h-[200px] w-full bg-gradient-to-br from-[#7FFF00] via-[#32CD32] to-[#9AFF9A] overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            {/* Logo */}
+        {/* Enhanced gradient overlay */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-r from-[#1a2332]/30 via-transparent to-[#1a2332]/20 z-0"
+          animate={{ opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+
+        <div className="relative z-10 h-full flex flex-col px-8 py-8">
+          {/* Navigation */}
+          <motion.nav 
+            className="flex items-center justify-between w-full"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
             <motion.div 
-              className="flex items-center gap-2 sm:gap-4"
-              whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
-              {...subtleFloat}
+              className="flex items-center gap-4"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
+              {/* Samadhan Logo */}
               <motion.div 
-                className="relative w-10 h-10 sm:w-14 sm:h-14 bg-[#1a2332] rounded-2xl flex items-center justify-center shadow-xl overflow-hidden"
-                whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
-                transition={{ duration: 0.2 }}
+                className="w-14 h-14 bg-[#1a2332] rounded-2xl flex items-center justify-center shadow-2xl"
+                whileHover={{ rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 0.6 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-[#7FFF00]/20 to-[#32CD32]/20"></div>
-                <div className="relative text-lg sm:text-xl font-bold text-white z-10">S</div>
+                <div className="relative">
+                  <motion.div 
+                    className="text-xl font-bold text-white"
+                    animate={{ textShadow: ["0 0 0px #7FFF00", "0 0 10px #7FFF00", "0 0 0px #7FFF00"] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    S
+                  </motion.div>
+                  <motion.div 
+                    className="absolute -right-1 top-1 w-2 h-2 bg-[#7FFF00] rounded-full"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                  />
+                  <motion.div 
+                    className="absolute -right-1 top-3 w-2 h-2 bg-[#32CD32] rounded-full"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                  />
+                  <motion.div 
+                    className="absolute -right-1 top-5 w-2 h-2 bg-[#9AFF9A] rounded-full"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.6 }}
+                  />
+                </div>
               </motion.div>
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-[#1a2332]">
+                <motion.div 
+                  className="text-2xl font-bold text-[#1a2332]"
+                  animate={{ y: [0, -2, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
                   SAMADHAN
-                </div>
-                <div className="text-[#1a2332]/70 text-xs sm:text-sm font-medium">
-                  {currentTime.toLocaleTimeString('en-IN', { 
-                    hour: '2-digit', 
-                    minute: '2-digit'
-                  })}
-                </div>
+                </motion.div>
+                <motion.div 
+                  className="text-[#1a2332]/80 font-medium text-sm"
+                  animate={{ opacity: [0.8, 1, 0.8] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  AI Banking Platform
+                </motion.div>
               </div>
             </motion.div>
-
-            {/* User Profile - Hidden on small screens */}
-            <div className="hidden sm:flex items-center gap-4 sm:gap-6">
+            
+            {/* User Profile */}
+            <div className="flex items-center gap-4">
               <motion.button
-                className="relative p-3 sm:p-4 rounded-2xl bg-white/70 hover:bg-white/90 transition-colors shadow-lg backdrop-blur-sm"
+                className="relative p-3 rounded-2xl bg-white/70 hover:bg-white/90 transition-colors shadow-lg backdrop-blur-sm"
                 whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
                 whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                 transition={{ duration: 0.15 }}
               >
-                <Bell className="w-5 h-5 sm:w-6 sm:h-6 text-[#1a2332]" />
+                <Bell className="w-5 h-5 text-[#1a2332]" />
               </motion.button>
               
               <motion.div 
-                className="flex items-center gap-2 sm:gap-4 bg-white/70 rounded-2xl px-4 sm:px-6 py-2 sm:py-3 shadow-lg backdrop-blur-sm border border-[#32CD32]/20"
+                className="flex items-center gap-2 bg-white/70 rounded-2xl px-4 py-2 shadow-lg backdrop-blur-sm border border-[#32CD32]/20"
                 whileHover={shouldReduceMotion ? {} : { y: -1 }}
                 transition={{ duration: 0.15 }}
               >
                 <motion.img
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"
                   alt="Profile"
-                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#32CD32] shadow-md"
+                  className="w-8 h-8 rounded-full border-2 border-[#32CD32] shadow-md"
                   whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
                   transition={{ duration: 0.15 }}
                 />
                 <div className="hidden sm:block">
-                  <div className="font-bold text-[#1a2332] text-sm sm:text-base">Rohit Sharma</div>
-                  <div className="text-[#32CD32] text-xs sm:text-sm font-medium">
+                  <div className="font-bold text-[#1a2332] text-sm">Rohit Sharma</div>
+                  <div className="text-[#32CD32] text-xs font-medium">
                     Premium Member
                   </div>
                 </div>
               </motion.div>
 
               <motion.button
-                className="p-3 sm:p-4 rounded-2xl bg-white/70 hover:bg-white/90 transition-colors shadow-lg backdrop-blur-sm"
+                className="p-3 rounded-2xl bg-white/70 hover:bg-white/90 transition-colors shadow-lg backdrop-blur-sm"
                 whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
                 whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
                 transition={{ duration: 0.15 }}
               >
-                <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-[#1a2332]" />
+                <Settings className="w-5 h-5 text-[#1a2332]" />
               </motion.button>
             </div>
-          </div>
+          </motion.nav>
+
+          {/* Welcome Section */}
+          <motion.div
+            className="flex-1 flex items-center justify-center"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            <motion.h1 
+              className="text-4xl md:text-5xl font-bold text-center text-[#1a2332]"
+              animate={{ 
+                textShadow: ["0 0 0px rgba(26, 35, 50, 0.3)", "0 5px 10px rgba(26, 35, 50, 0.3)", "0 0 0px rgba(26, 35, 50, 0.3)"]
+              }}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              Welcome to Your Dashboard
+            </motion.h1>
+          </motion.div>
         </div>
       </motion.header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 relative z-10">
-        {/* Welcome Section */}
-        <motion.div
-          className="mb-8 sm:mb-10"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a2332] mb-2 sm:mb-3">
-            Welcome back, Rohit! 
-          </h1>
-          <p className="text-[#1a2332]/70 text-base sm:text-xl">
-            Here's what's happening with your finances today
-          </p>
-        </motion.div>
-
+      <main className="relative z-10 container mx-auto px-8 py-12 -mt-16">
         {/* Balance Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mb-12 sm:mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {/* Main Balance Card */}
           <motion.div
             className="md:col-span-2 relative"
@@ -367,63 +380,63 @@ const Dashboard = () => {
             animate="visible"
             whileHover="hover"
           >
-            <div className="bg-gradient-to-br from-[#7FFF00] via-[#32CD32] to-[#9AFF9A] rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl">
-              <div className="flex flex-col sm:flex-row justify-between items-start mb-6 sm:mb-8 gap-4">
+            <div className="bg-gradient-to-br from-[#7FFF00] via-[#32CD32] to-[#9AFF9A] rounded-3xl p-8 shadow-xl">
+              <div className="flex flex-col sm:flex-row justify-between items-start mb-8 gap-4">
                 <div>
-                  <h3 className="text-[#1a2332]/80 text-lg sm:text-xl font-medium mb-2 sm:mb-3">
+                  <h3 className="text-[#1a2332]/80 text-lg font-medium mb-3">
                     Total Balance
                   </h3>
-                  <div className="flex items-center gap-4 sm:gap-6">
+                  <div className="flex items-center gap-6">
                     <motion.div 
-                      className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#1a2332]"
+                      className="text-5xl font-bold text-[#1a2332]"
                       {...(showBalance && !shouldReduceMotion ? gentlePulse : {})}
                     >
                       {showBalance ? '₹3,78,116.19' : '••••••••'}
                     </motion.div>
                     <motion.button
                       onClick={toggleBalance}
-                      className="p-2 sm:p-3 rounded-2xl bg-[#1a2332]/20 hover:bg-[#1a2332]/30 transition-colors backdrop-blur-sm"
+                      className="p-3 rounded-2xl bg-[#1a2332]/20 hover:bg-[#1a2332]/30 transition-colors backdrop-blur-sm"
                       whileHover={shouldReduceMotion ? {} : { scale: 1.1 }}
                       whileTap={shouldReduceMotion ? {} : { scale: 0.9 }}
                       transition={{ duration: 0.15 }}
                     >
-                      {showBalance ? <EyeOff className="w-5 h-5 sm:w-6 sm:h-6 text-[#1a2332]" /> : <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-[#1a2332]" />}
+                      {showBalance ? <EyeOff className="w-6 h-6 text-[#1a2332]" /> : <Eye className="w-6 h-6 text-[#1a2332]" />}
                     </motion.button>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[#1a2332]/80 text-xs sm:text-sm mb-1 sm:mb-2">This Month</div>
-                  <div className="flex items-center gap-1 sm:gap-2 text-[#1a2332] font-bold text-sm sm:text-lg">
-                    <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <div className="text-[#1a2332]/80 text-sm mb-2">This Month</div>
+                  <div className="flex items-center gap-2 text-[#1a2332] font-bold text-lg">
+                    <ArrowUpRight className="w-5 h-5" />
                     +12.5%
                   </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <motion.div 
-                  className="bg-white/25 rounded-3xl p-4 sm:p-6 backdrop-blur-sm border border-white/20 shadow-lg"
+                  className="bg-white/25 rounded-3xl p-6 backdrop-blur-sm border border-white/20 shadow-lg"
                   whileHover={shouldReduceMotion ? {} : { y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <Wallet className="w-5 h-5 sm:w-6 sm:h-6 text-[#1a2332]" />
-                    <span className="text-[#1a2332]/80 font-medium text-sm sm:text-base">Savings</span>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Wallet className="w-6 h-6 text-[#1a2332]" />
+                    <span className="text-[#1a2332]/80 font-medium text-base">Savings</span>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-[#1a2332]">
+                  <div className="text-3xl font-bold text-[#1a2332]">
                     ₹2,45,330
                   </div>
                 </motion.div>
                 <motion.div 
-                  className="bg-white/25 rounded-3xl p-4 sm:p-6 backdrop-blur-sm border border-white/20 shadow-lg"
+                  className="bg-white/25 rounded-3xl p-6 backdrop-blur-sm border border-white/20 shadow-lg"
                   whileHover={shouldReduceMotion ? {} : { y: -2 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-[#1a2332]" />
-                    <span className="text-[#1a2332]/80 font-medium text-sm sm:text-base">Investments</span>
+                  <div className="flex items-center gap-3 mb-3">
+                    <TrendingUp className="w-6 h-6 text-[#1a2332]" />
+                    <span className="text-[#1a2332]/80 font-medium text-base">Investments</span>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-bold text-[#1a2332]">
+                  <div className="text-3xl font-bold text-[#1a2332]">
                     ₹1,32,786
                   </div>
                 </motion.div>
@@ -433,23 +446,23 @@ const Dashboard = () => {
 
           {/* Monthly Overview */}
           <motion.div
-            className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl border border-[#32CD32]/30"
+            className="bg-white/85 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-[#32CD32]/30"
             custom={1}
             variants={cardVariants}
             initial="hidden"
             animate="visible"
             whileHover="hover"
           >
-            <div className="flex items-center justify-between mb-6 sm:mb-8">
-              <h3 className="text-xl sm:text-2xl font-bold text-[#1a2332]">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold text-[#1a2332]">
                 Monthly Overview
               </h3>
-              <div className="p-2 sm:p-3 rounded-2xl bg-gradient-to-r from-[#7FFF00]/20 to-[#32CD32]/20 backdrop-blur-sm">
-                <PieChart className="w-5 h-5 sm:w-6 sm:h-6 text-[#32CD32]" />
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-[#7FFF00]/20 to-[#32CD32]/20 backdrop-blur-sm">
+                <PieChart className="w-6 h-6 text-[#32CD32]" />
               </div>
             </div>
             
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-6">
               {[
                 { label: 'Income', value: '₹85,420', color: 'bg-[#32CD32]', percentage: 85 },
                 { label: 'Expenses', value: '₹32,890', color: 'bg-[#FF6B6B]', percentage: 35 },
@@ -461,16 +474,16 @@ const Dashboard = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
                 >
-                  <div className="flex items-center justify-between mb-1 sm:mb-2">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full ${item.color} shadow-sm`} />
-                      <span className="text-[#1a2332]/80 font-medium text-sm sm:text-base">{item.label}</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-4 h-4 rounded-full ${item.color} shadow-sm`} />
+                      <span className="text-[#1a2332]/80 font-medium text-base">{item.label}</span>
                     </div>
-                    <span className="font-bold text-[#1a2332] text-base sm:text-lg">
+                    <span className="font-bold text-[#1a2332] text-lg">
                       {item.value}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2 overflow-hidden">
+                  <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                     <motion.div 
                       className={`h-full rounded-full ${item.color}`}
                       initial={{ width: 0 }}
@@ -486,20 +499,20 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <motion.div
-          className="mb-12 sm:mb-16"
+          className="mb-16"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#1a2332] mb-6 sm:mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#1a2332] mb-8">
             Quick Actions
           </h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {quickActions.map((action, index) => (
               <motion.button
                 key={action.id}
-                className="group relative bg-white/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl border border-[#32CD32]/30 hover:border-[#32CD32]/60 transition-all duration-300"
+                className="group relative bg-white/85 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-[#32CD32]/30 hover:border-[#32CD32]/60 transition-all duration-300"
                 custom={index}
                 variants={cardVariants}
                 initial="hidden"
@@ -509,27 +522,27 @@ const Dashboard = () => {
               >
                 <div className="text-center">
                   <motion.div 
-                    className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 rounded-3xl bg-gradient-to-r ${action.color} flex items-center justify-center shadow-lg`}
+                    className={`w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-r ${action.color} flex items-center justify-center shadow-lg`}
                     whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <action.icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                    <action.icon className="w-10 h-10 text-white" />
                   </motion.div>
                   
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#1a2332] mb-2 sm:mb-3">
+                  <h3 className="text-2xl font-bold text-[#1a2332] mb-3">
                     {action.title}
                   </h3>
                   
-                  <p className="text-[#1a2332]/70 text-sm sm:text-lg mb-4 sm:mb-6">
+                  <p className="text-[#1a2332]/70 text-lg mb-6">
                     {action.description}
                   </p>
                   
                   <motion.div 
-                    className="inline-flex items-center gap-1 sm:gap-2 text-[#32CD32] font-bold text-sm sm:text-base"
+                    className="inline-flex items-center gap-2 text-[#32CD32] font-bold text-base"
                     whileHover={shouldReduceMotion ? {} : { x: 3 }}
                     transition={{ duration: 0.15 }}
                   >
-                    Explore Now <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    Explore Now <ChevronRight className="w-5 h-5" />
                   </motion.div>
                 </div>
               </motion.button>
@@ -539,47 +552,47 @@ const Dashboard = () => {
 
         {/* Recent Transactions */}
         <motion.div
-          className="bg-white/85 backdrop-blur-xl rounded-3xl p-6 sm:p-8 md:p-10 shadow-xl border border-[#32CD32]/30"
+          className="bg-white/85 backdrop-blur-xl rounded-3xl p-10 shadow-xl border border-[#32CD32]/30"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#1a2332]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+            <h3 className="text-3xl font-bold text-[#1a2332]">
               Recent Transactions
             </h3>
             
             <motion.button
-              className="flex items-center gap-1 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-[#7FFF00] to-[#32CD32] text-[#1a2332] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-shadow text-sm sm:text-base"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#7FFF00] to-[#32CD32] text-[#1a2332] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-shadow text-base"
               whileHover={shouldReduceMotion ? {} : { y: -1 }}
               whileTap={shouldReduceMotion ? {} : { scale: 0.98 }}
               transition={{ duration: 0.15 }}
             >
-              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Send className="w-5 h-5" />
               Filter
             </motion.button>
           </div>
           
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-6">
             {transactions.map((transaction, index) => (
               <motion.div
                 key={transaction.id}
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 bg-white/50 rounded-3xl border border-[#32CD32]/20 hover:border-[#32CD32]/40 transition-colors hover:shadow-lg backdrop-blur-sm gap-4 sm:gap-0"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 bg-white/50 rounded-3xl border border-[#32CD32]/20 hover:border-[#32CD32]/40 transition-colors hover:shadow-lg backdrop-blur-sm gap-4 sm:gap-0"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 + index * 0.05, duration: 0.4 }}
                 whileHover={shouldReduceMotion ? {} : { x: 2 }}
               >
-                <div className="flex items-center gap-4 sm:gap-6">
-                  <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r ${transaction.color} flex items-center justify-center shadow-lg`}>
-                    <transaction.icon className="w-5 h-5 sm:w-8 sm:h-8 text-white" />
+                <div className="flex items-center gap-6">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${transaction.color} flex items-center justify-center shadow-lg`}>
+                    <transaction.icon className="w-8 h-8 text-white" />
                   </div>
                   
                   <div>
-                    <h4 className="font-bold text-[#1a2332] text-base sm:text-lg md:text-xl mb-1">
+                    <h4 className="font-bold text-[#1a2332] text-lg md:text-xl mb-1">
                       {transaction.merchant}
                     </h4>
-                    <div className="flex items-center gap-2 sm:gap-4 text-[#1a2332]/70 text-xs sm:text-sm">
+                    <div className="flex items-center gap-4 text-[#1a2332]/70 text-sm">
                       <span className="font-medium">{transaction.category}</span>
                       <span>•</span>
                       <span>{new Date(transaction.date).toLocaleDateString('en-IN')}</span>
@@ -587,7 +600,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 
-                <div className={`font-bold text-lg sm:text-xl md:text-2xl ${transaction.amount > 0 ? 'text-[#32CD32]' : 'text-[#FF4444]'}`}>
+                <div className={`font-bold text-xl md:text-2xl ${transaction.amount > 0 ? 'text-[#32CD32]' : 'text-[#FF4444]'}`}>
                   {transaction.amount > 0 ? '+' : ''}₹{Math.abs(transaction.amount).toLocaleString('en-IN')}
                 </div>
               </motion.div>
@@ -597,28 +610,28 @@ const Dashboard = () => {
       </main>
 
       {/* Floating Action Buttons */}
-      <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 flex flex-col gap-4 sm:gap-6 z-50">
+      <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 flex flex-col gap-6 z-50">
         {/* Chatbot Widget Button */}
         <motion.button 
           onClick={toggleChat}
-          className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-[#00F0FF] to-[#00A8FF] flex items-center justify-center shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-[#80F8FF]/30 backdrop-blur-lg"
+          className="w-16 h-16 rounded-full bg-gradient-to-br from-[#00F0FF] to-[#00A8FF] flex items-center justify-center shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-[#80F8FF]/30 backdrop-blur-lg"
           whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
           whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
           {...(!shouldReduceMotion ? subtleFloat : {})}
           transition={{ duration: 0.2 }}
         >
-          <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          <MessageCircle className="w-8 h-8 text-white" />
         </motion.button>
 
         {/* Support Widget Button */}
         <motion.button 
-          className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-[#B026FF] to-[#D041FF] flex items-center justify-center shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-[#E366FF]/30 backdrop-blur-lg"
+          className="w-16 h-16 rounded-full bg-gradient-to-br from-[#B026FF] to-[#D041FF] flex items-center justify-center shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-[#E366FF]/30 backdrop-blur-lg"
           whileHover={shouldReduceMotion ? {} : { scale: 1.05 }}
           whileTap={shouldReduceMotion ? {} : { scale: 0.95 }}
           transition={{ duration: 0.2 }}
           onClick={handleSupportClick}
         >
-          <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+          <HelpCircle className="w-8 h-8 text-white" />
         </motion.button>
       </div>
 
